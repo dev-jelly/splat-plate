@@ -1,1 +1,1 @@
-const base = "/splat-plate/";
+export const base = "/splat-plate/";
