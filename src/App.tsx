@@ -32,7 +32,7 @@ function App() {
     <>
       <div
         className={
-          "flex h-screen w-screen items-center justify-center bg-black/80 sm:p-8"
+          "flex h-screen w-screen items-center justify-center overflow-auto bg-black/80 sm:p-8"
         }
       >
         <div className={"h-full max-h-[648px] w-full max-w-[1152px] sm:p-8"}>

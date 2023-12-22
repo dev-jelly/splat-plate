@@ -4,8 +4,10 @@ import { useState } from "react";
 import {
   setBanner,
   setColor,
+  setGradient,
   setLayers,
   useBanner,
+  useGradient,
 } from "../../lib/store/use-tag-store.ts";
 import { clsx } from "clsx";
 import {
@@ -24,6 +26,7 @@ export function BannerTab() {
 
   const castedBanners = banners as Banner[];
   const definedBanner = defineBanners(castedBanners);
+  const gradient = useGradient();
 
   // const { customBanners } = assets;
   // const castedCustomBanners = customBanners as Banner[];
@@ -65,11 +68,51 @@ export function BannerTab() {
       </div>
       <div className="bottomcontainer">
         <div id="bannercolours" style={{ display: "inline" }}>
-          <span id="textColour">Colour</span>{" "}
-          <input type="color" value="#ffffff" />{" "}
-          <input type="color" value="#ff0000" />{" "}
-          <input type="color" value="#00ff00" />
-          <input type="color" value="#0000ff" />
+          <span
+            id="textColour"
+            className={"cursor-pointer"}
+            onClick={() => {
+              setGradient([...gradient]);
+            }}
+          >
+            Gradient
+          </span>{" "}
+          <input
+            type="color"
+            value={gradient[0]}
+            onChange={(e) => {
+              const newGradients = [...gradient];
+              newGradients[0] = e.target.value;
+              setGradient(newGradients);
+            }}
+          />
+          <input
+            type="color"
+            value={gradient[1]}
+            onChange={(e) => {
+              const newGradients = [...gradient];
+              newGradients[1] = e.target.value;
+              setGradient(newGradients);
+            }}
+          />
+          <input
+            type="color"
+            value={gradient[2]}
+            onChange={(e) => {
+              const newGradients = [...gradient];
+              newGradients[2] = e.target.value;
+              setGradient(newGradients);
+            }}
+          />
+          <input
+            type="color"
+            value={gradient[3]}
+            onChange={(e) => {
+              const newGradients = [...gradient];
+              newGradients[3] = e.target.value;
+              setGradient(newGradients);
+            }}
+          />
         </div>
       </div>
     </div>
@@ -122,7 +165,7 @@ const BannerRenderer = (props: BannerRendererProps) => {
               className={clsx("cursor-pointer")}
               onClick={() => {
                 setBanner(item.file);
-                setColor(item.colour);
+                setColor("#" + item.colour);
                 setLayers(item.layers || 0);
               }}
               loading={"lazy"}

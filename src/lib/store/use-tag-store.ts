@@ -10,6 +10,7 @@ export type TagState = {
   color: string;
   bgColours: string[];
   isCustom: boolean;
+  isGradient: boolean;
   layers: number;
 };
 
@@ -38,8 +39,9 @@ export const initTagState: TagState = {
   layers: 0,
   id: lang["KRko"].sign + "0001",
   badges: ["", "", ""],
-  color: "ffffff",
-  bgColours: ["#fff", "#f00", "#0f0", "#00f"],
+  color: "#ffffff",
+  bgColours: ["#bbbbbb", "#999999", "#555555", "#222222"],
+  isGradient: false,
   isCustom: false,
 };
 
@@ -81,6 +83,7 @@ export const setBanner = (banner: string) => {
   useTagStore.setState((state) => ({
     ...state,
     banner,
+    isGradient: false,
   }));
 };
 
@@ -126,4 +129,16 @@ export const setLayers = (layers: number) => {
     ...state,
     layers,
   }));
+};
+
+export const setGradient = (bgColours: string[]) => {
+  useTagStore.setState((state) => ({
+    ...state,
+    bgColours,
+    isGradient: true,
+  }));
+};
+
+export const useGradient = () => {
+  return useTagStore((state) => state.bgColours);
 };

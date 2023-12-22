@@ -96,6 +96,7 @@ export function TextTab() {
                   type="color"
                   onChange={(e) => {
                     setColor(e.target.value);
+                    console.log(e.target.value);
                   }}
                   value={color}
                 />

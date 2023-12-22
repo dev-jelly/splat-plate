@@ -141,6 +141,7 @@ export const renderPlate = async (
     badges,
     isCustom,
     id,
+    isGradient,
   } = tagState;
 
   const bannerImage = await getBannerImage(banner);
@@ -151,10 +152,18 @@ export const renderPlate = async (
   canvasLayer.height = 200;
   const layerCtx = canvasLayer.getContext("2d");
   ctx.save();
-  if (!layers) {
+  if (isGradient) {
+    // If gradient, draw the gradient then the banner
+    const gradient = ctx.createLinearGradient(350, 0, 350, 200);
+    gradient.addColorStop(0, bgColours[0]);
+    gradient.addColorStop(0.33, bgColours[1]);
+    gradient.addColorStop(0.66, bgColours[2]);
+    gradient.addColorStop(1, bgColours[3]);
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 700, 200);
+  } else if (!layers) {
     // If not one of the special "pick your own colour" banners, just draw it
     ctx.drawImage(bannerImage, 0, 0, 700, 200);
-    ctx.restore();
   } else {
     // Special custom colour banners draw each layer then are added
 
@@ -192,6 +201,7 @@ export const renderPlate = async (
       layerCtx.clearRect(0, 0, 700, 200);
     }
   }
+  ctx.restore();
 
   /// About Text
   const textScale = 2;
@@ -201,7 +211,7 @@ export const renderPlate = async (
   textCtx.scale(textScale, textScale);
 
   // Set text colour
-  textCtx.fillStyle = "#" + color;
+  textCtx.fillStyle = color;
 
   // Write titles
   textCtx.textAlign = "left";
