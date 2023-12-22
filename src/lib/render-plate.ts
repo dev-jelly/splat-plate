@@ -1,5 +1,6 @@
 import { TagState } from "./store/use-tag-store.ts";
 import * as lang from "../lang.json";
+import { base } from "./const.ts";
 
 const bannerSrc = (file: string, custom = false) =>
   `${base}/assets/${custom ? "custom/" : ""}banners/${file}`;
