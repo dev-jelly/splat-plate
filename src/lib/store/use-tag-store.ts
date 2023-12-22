@@ -1,5 +1,6 @@
 import * as lang from "../../lang.json";
 import { create } from "zustand";
+import { GradientDirection } from "../types/gradient.ts";
 
 export type TagState = {
   name: string;
@@ -12,6 +13,7 @@ export type TagState = {
   isCustom: boolean;
   isGradient: boolean;
   layers: number;
+  gradientDirection: GradientDirection;
 };
 
 type TagStore = TagState & {
@@ -43,6 +45,7 @@ export const initTagState: TagState = {
   bgColours: ["#bbbbbb", "#999999", "#555555", "#222222"],
   isGradient: false,
   isCustom: false,
+  gradientDirection: "to bottom",
 };
 
 export const useTagStore = create<TagStore>((set) => ({
@@ -141,4 +144,16 @@ export const setGradient = (bgColours: string[]) => {
 
 export const useGradient = () => {
   return useTagStore((state) => state.bgColours);
+};
+
+export const useGradientDirection = () => {
+  return useTagStore((state) => state.gradientDirection);
+};
+
+export const setGradientDirection = (gradientDirection: GradientDirection) => {
+  useTagStore.setState((state) => ({
+    ...state,
+    gradientDirection,
+    isGradient: true,
+  }));
 };

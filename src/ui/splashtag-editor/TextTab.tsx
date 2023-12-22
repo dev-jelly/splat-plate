@@ -50,7 +50,7 @@ export function TextTab() {
       className="flex h-full w-full flex-col items-center justify-start p-2 text-white sm:p-4 md:px-8"
       data-name="text"
     >
-      <div className="flex w-full flex-col justify-start md:gap-4">
+      <div className="flex max-h-[calc(100vh-120px)]  w-full flex-col justify-start overflow-y-scroll md:gap-4">
         <div>
           <div className="w-full text-start">
             <p className="my-2">{langs.ui.textName}: </p>

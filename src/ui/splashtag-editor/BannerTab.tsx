@@ -4,10 +4,8 @@ import { useState } from "react";
 import {
   setBanner,
   setColor,
-  setGradient,
   setLayers,
   useBanner,
-  useGradient,
 } from "../../lib/store/use-tag-store.ts";
 import { clsx } from "clsx";
 import {
@@ -20,20 +18,20 @@ import {
 import { defineBanners } from "../../lib/define-banner.ts";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
 import { base } from "../../lib/const.ts";
+import { GradientRenderer } from "./banner-tab/GradientRenderer.tsx";
 
 export function BannerTab() {
   const { banners } = assets;
 
   const castedBanners = banners as Banner[];
   const definedBanner = defineBanners(castedBanners);
-  const gradient = useGradient();
 
   // const { customBanners } = assets;
   // const castedCustomBanners = customBanners as Banner[];
   // const definedCustomBanner = defineBanners(castedCustomBanners);
 
   return (
-    <div className="h-full overflow-y-scroll text-white">
+    <div className="h-full max-h-[calc(100vh-180px)] overflow-y-scroll text-white">
       {/*<label className="file">*/}
       {/*  (<span id="textUpload">Upload</span>)*/}
       {/*  <input*/}
@@ -66,54 +64,8 @@ export function BannerTab() {
           {/*})}*/}
         </div>
       </div>
-      <div className="bottomcontainer">
-        <div id="bannercolours" style={{ display: "inline" }}>
-          <span
-            id="textColour"
-            className={"cursor-pointer"}
-            onClick={() => {
-              setGradient([...gradient]);
-            }}
-          >
-            Gradient
-          </span>{" "}
-          <input
-            type="color"
-            value={gradient[0]}
-            onChange={(e) => {
-              const newGradients = [...gradient];
-              newGradients[0] = e.target.value;
-              setGradient(newGradients);
-            }}
-          />
-          <input
-            type="color"
-            value={gradient[1]}
-            onChange={(e) => {
-              const newGradients = [...gradient];
-              newGradients[1] = e.target.value;
-              setGradient(newGradients);
-            }}
-          />
-          <input
-            type="color"
-            value={gradient[2]}
-            onChange={(e) => {
-              const newGradients = [...gradient];
-              newGradients[2] = e.target.value;
-              setGradient(newGradients);
-            }}
-          />
-          <input
-            type="color"
-            value={gradient[3]}
-            onChange={(e) => {
-              const newGradients = [...gradient];
-              newGradients[3] = e.target.value;
-              setGradient(newGradients);
-            }}
-          />
-        </div>
+      <div className="my-8 w-full flex-col items-center justify-center">
+        <GradientRenderer />
       </div>
     </div>
   );

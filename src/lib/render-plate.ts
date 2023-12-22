@@ -1,6 +1,7 @@
 import { TagState } from "./store/use-tag-store.ts";
 import * as lang from "../lang.json";
 import { base } from "./const.ts";
+import { scaleStepByGradientDirection } from "./types/gradient.ts";
 
 const bannerSrc = (file: string, custom = false) =>
   `${base}/assets/${custom ? "custom/" : ""}banners/${file}`;
@@ -142,6 +143,7 @@ export const renderPlate = async (
     isCustom,
     id,
     isGradient,
+    gradientDirection,
   } = tagState;
 
   const bannerImage = await getBannerImage(banner);
@@ -154,7 +156,17 @@ export const renderPlate = async (
   ctx.save();
   if (isGradient) {
     // If gradient, draw the gradient then the banner
-    const gradient = ctx.createLinearGradient(350, 0, 350, 200);
+    const [sx, sy, dx, dy] = scaleStepByGradientDirection(
+      gradientDirection,
+      700,
+      200,
+    );
+
+    let gradient = ctx.createLinearGradient(sx, sy, dx, dy);
+    if (gradientDirection === "to outside") {
+      gradient = ctx.createRadialGradient(sx, sy, 0, dx, dy, 700 / 2);
+    }
+
     gradient.addColorStop(0, bgColours[0]);
     gradient.addColorStop(0.33, bgColours[1]);
     gradient.addColorStop(0.66, bgColours[2]);

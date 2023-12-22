@@ -42,7 +42,7 @@ export function BadgeTab() {
   }, [currentBadges]);
 
   return (
-    <div className={"overflow-hidden p-2 md:px-8 md:py-4"}>
+    <div className={"h-full overflow-y-hidden p-2 md:px-8 md:py-4"}>
       <div className={"my-2 flex gap-4"}>
         <label onClick={() => setSelectedSlot(0)}>
           <input
@@ -81,7 +81,7 @@ export function BadgeTab() {
         </label>
       </div>
       <div className={"my-4 h-px w-full bg-black/20"}></div>
-      <div className="h-[380px] overflow-y-scroll pb-16 pr-2">
+      <div className="h-full max-h-[calc(100vh-240px)] overflow-y-scroll pr-2 sm:pb-24">
         {Object.entries(badges).map((b) => {
           return (
             <BadgeItem

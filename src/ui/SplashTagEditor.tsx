@@ -36,20 +36,23 @@ export function SplashTagEditor() {
         />
       </div>
       <div
+        // style={{
+        //   backgroundImage: `url(${base}/backgrounds/tab-background.png)`,
+        // }}
         className={
-          "mx-auto mt-4 min-h-[420px] w-full overflow-clip rounded-md bg-gray-600 sm:mt-8 md:max-w-3xl"
+          "mx-auto mt-4 min-h-[420px] w-full overflow-clip rounded-md backdrop-brightness-95 sm:mt-8 md:max-w-3xl"
         }
       >
-        <div className="flex h-[420px]">
+        <div className="flex h-full bg-gray-900 md:h-[420px]">
           <div
             className={
-              "flex h-full min-w-fit flex-col items-start justify-start"
+              "flex h-full min-w-fit flex-col items-start justify-start "
             }
           >
-            <div className="h-full">
+            <div className="h-full ">
               {/* Sidebar component, swap this element with another sidebar if you like */}
-              <div className="flex h-full grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-2 pb-4 sm:pl-2">
-                <nav className="flex h-full flex-1 flex-col">
+              <div className="flex h-full grow flex-col gap-y-5 overflow-y-auto bg-opacity-90 px-2 pb-4 sm:pl-2">
+                <nav className="h-full">
                   <ul role="list" className="space-y-1 py-3">
                     <button
                       onClick={() => setTab(0)}
@@ -125,7 +128,7 @@ export function SplashTagEditor() {
               </div>
             </div>
           </div>
-          <div className="h-full px-2 text-white">
+          <div className="h-full w-full  px-2 text-white backdrop-contrast-125">
             {/*Text --- Name, Tag, Titles*/}
             {tab === 0 && <TextTab />}
             {tab === 1 && <BannerTab />}
