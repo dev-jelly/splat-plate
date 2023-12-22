@@ -26,6 +26,6 @@ jobs:
       name: Install pnpm
       with:
         version: 8
-    - run: pnpm ci
-    - run: pnpm run build --if-present
+    - run: pnpm i
+    - run: pnpm build --if-present
 
