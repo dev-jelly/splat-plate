@@ -17,6 +17,7 @@ import {
 } from "../../lib/types/banner.ts";
 import { defineBanners } from "../../lib/define-banner.ts";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/16/solid";
+import { base } from "../../lib/const.ts";
 
 export function BannerTab() {
   const { banners } = assets;
@@ -125,7 +126,9 @@ const BannerRenderer = (props: BannerRendererProps) => {
                 setLayers(item.layers || 0);
               }}
               loading={"lazy"}
-              src={`/assets/${custom ? "custom/" : ""}banners/${item.file}`}
+              src={`${base}/assets/${custom ? "custom/" : ""}banners/${
+                item.file
+              }`}
               alt={item.colour}
               data-colour={item.colour}
               data-name={item.file}
