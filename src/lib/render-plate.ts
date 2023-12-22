@@ -2,7 +2,7 @@ import { TagState } from "./store/use-tag-store.ts";
 import * as lang from "../lang.json";
 
 const bannerSrc = (file: string, custom = false) =>
-  `/assets/${custom ? "custom/" : ""}banners/${file}`;
+  `${base}/assets/${custom ? "custom/" : ""}banners/${file}`;
 
 const language = "KRko";
 
@@ -29,7 +29,7 @@ const getBannerImage = async (banner: string) => {
 
 const getBadgeImage = async (badge: string) => {
   const image = new Image();
-  image.src = `/assets/badges/${badge}`;
+  image.src = `${base}/assets/badges/${badge}`;
   await new Promise((r) => {
     image.onload = r;
   });
