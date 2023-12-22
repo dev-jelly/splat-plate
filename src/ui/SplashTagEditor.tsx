@@ -15,6 +15,16 @@ export function SplashTagEditor() {
   const tag = useTagStore();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  useEffect(() => {
+    // 임시로 폰트 로딩 후 재 렌더링을 하기 위한 코드
+    // 추후 개선 필요
+    setTimeout(() => {
+      if (!canvasRef.current) return;
+      renderSplashtag(canvasRef.current, tag).then(() => {
+        console.log("rendered");
+      });
+    }, 1500);
+  }, []);
 
   useEffect(() => {
     if (!canvasRef.current) return;
