@@ -36,6 +36,25 @@ const getBadgeImage = async (badge: string) => {
   return image;
 };
 
+function isFontLoaded(fontName: string, fontSize = "16px"): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    // Check if the font is already loaded
+    if (document.fonts.check(fontSize + " " + fontName)) {
+      resolve(true);
+    } else {
+      // Font is not loaded, so listen for the load event
+      document.fonts
+        .load(fontSize + " " + fontName)
+        .then(() => {
+          resolve(true);
+        })
+        .catch(() => {
+          reject(false);
+        });
+    }
+  });
+}
+
 const isSpaceLang = (language: string) => {
   return (
     [
@@ -81,11 +100,28 @@ const loadFont = async () => {
   await document.fonts.ready;
 };
 
-export const renderSplashtag = async (
+const textFont = `Splat-text${
+  lang[language].font ? "," + lang[language].font[0] : ""
+}`;
+
+const titleFont = `Splat-title${
+  lang[language].font ? "," + lang[language].font[1] : ""
+}`;
+
+export const loadFonts = async () => {
+  await loadFont();
+  return (await isFontLoaded(titleFont)) && (await isFontLoaded(textFont));
+};
+
+export const renderPlate = async (
   canvas: HTMLCanvasElement,
   tagState: TagState,
 ) => {
-  await loadFont();
+  if (!((await isFontLoaded(titleFont)) && (await isFontLoaded(textFont)))) {
+    return;
+  }
+  console.log("font loaded");
+
   const ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
   const textCtx = textCanvas.getContext("2d") as CanvasRenderingContext2D & {
     letterSpacing: string;
@@ -168,13 +204,7 @@ export const renderSplashtag = async (
 
   // Write titles
   textCtx.textAlign = "left";
-  const textFont = `Splat-text${
-    lang[language].font ? "," + lang[language].font[0] : ""
-  }`;
 
-  const titleFont = `Splat-title${
-    lang[language].font ? "," + lang[language].font[1] : ""
-  }`;
   console.log("textFont", textFont);
 
   if (title) {

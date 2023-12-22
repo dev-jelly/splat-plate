@@ -1,28 +1,32 @@
 import "./App.css";
-import { useEffect, useRef, useState } from "react";
-import { load } from "./main.ts";
+import { useEffect, useState } from "react";
 import { SplashTagEditor } from "./ui/SplashTagEditor.tsx";
+import { loadFonts } from "./lib/render-plate.ts";
 
 function App() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-  }, []);
+    if (loaded) return;
 
-  useEffect(() => {
-    if (!canvasRef.current) return;
-    // fill white canvas
-    const ctx = canvasRef.current.getContext("2d");
-    if (!ctx) return;
-    ctx.fillStyle = "white";
-    ctx.fillRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    setTimeout(() => {
-      if (!canvasRef.current) return;
-      load(canvasRef.current);
+    const interval = setInterval(async () => {
+      console.log("loading fonts");
+      setLoaded(await loadFonts());
     }, 500);
-  }, [canvasRef.current, loading]);
+
+    return () => clearInterval(interval);
+  }, [loaded]);
+
+  if (!loaded)
+    return (
+      <div
+        className={
+          "flex h-screen w-screen items-center justify-center bg-black/50 text-white"
+        }
+      >
+        <div>Loading...</div>
+      </div>
+    );
 
   return (
     <>
