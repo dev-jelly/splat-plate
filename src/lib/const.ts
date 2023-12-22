@@ -1,0 +1,1 @@
+const base = "/splat-plate/";
