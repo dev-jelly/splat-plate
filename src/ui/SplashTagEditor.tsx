@@ -7,6 +7,7 @@ import { useTagStore } from "../lib/store/use-tag-store.ts";
 import { renderPlate } from "../lib/render-plate.ts";
 import { clsx } from "clsx";
 import { downloadTag } from "../lib/download-tag.ts";
+import { ShareTab } from "./splashtag-editor/ShareTab.tsx";
 
 const language = "KRko";
 
@@ -107,6 +108,19 @@ export function SplashTagEditor() {
                       위치 및 크기
                     </button>
                     <button
+                      onClick={() => setTab(4)}
+                      className={clsx(
+                        tab === 4
+                          ? "bg-gray-800 text-white"
+                          : "text-gray-400 hover:bg-gray-800 hover:text-white",
+                        "group flex w-full gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 disabled:cursor-not-allowed disabled:opacity-50",
+                      )}
+                      type="button"
+                      name="tabBadges"
+                    >
+                      정보 및 공유
+                    </button>
+                    <button
                       disabled={!canvasRef.current}
                       onClick={() => {
                         if (!canvasRef.current) return;
@@ -133,6 +147,7 @@ export function SplashTagEditor() {
             {tab === 0 && <TextTab />}
             {tab === 1 && <BannerTab />}
             {tab === 2 && <BadgeTab />}
+            {tab === 4 && <ShareTab />}
           </div>
         </div>
       </div>
