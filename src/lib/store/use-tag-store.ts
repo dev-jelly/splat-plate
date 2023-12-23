@@ -2,6 +2,26 @@ import * as lang from "../../lang.json";
 import { create } from "zustand";
 import { GradientDirection } from "../types/gradient.ts";
 
+import { createJSONStorage, persist, StateStorage } from "zustand/middleware";
+
+const hashStorage: StateStorage = {
+  getItem: (key): string => {
+    const searchParams = new URLSearchParams(location.hash.slice(1));
+    const storedValue = searchParams.get(key) ?? "";
+    return JSON.parse(storedValue);
+  },
+  setItem: (key, newValue): void => {
+    const searchParams = new URLSearchParams(location.hash.slice(1));
+    searchParams.set(key, JSON.stringify(newValue));
+    location.hash = searchParams.toString();
+  },
+  removeItem: (key): void => {
+    const searchParams = new URLSearchParams(location.hash.slice(1));
+    searchParams.delete(key);
+    location.hash = searchParams.toString();
+  },
+};
+
 export type TagState = {
   name: string;
   title: Title;
@@ -48,14 +68,22 @@ export const initTagState: TagState = {
   gradientDirection: "to bottom",
 };
 
-export const useTagStore = create<TagStore>((set) => ({
-  ...initTagState,
-  set: (tag: TagState) =>
-    set((state) => ({
-      ...state,
-      ...tag,
-    })),
-}));
+export const useTagStore = create<TagStore, [["zustand/persist", TagStore]]>(
+  persist(
+    (set) => ({
+      ...initTagState,
+      set: (tag: TagState) =>
+        set((state) => ({
+          ...state,
+          ...tag,
+        })),
+    }),
+    {
+      name: "tag-storage", // unique name
+      storage: createJSONStorage(() => hashStorage),
+    },
+  ),
+);
 
 export const setTitle = (title: Partial<Title>) => {
   useTagStore.setState((state) => ({
