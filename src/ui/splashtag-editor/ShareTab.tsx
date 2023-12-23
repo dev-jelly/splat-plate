@@ -36,7 +36,7 @@ const SocialShare = () => {
           본 프로젝트의 소스 코드는 아래 링크에서 확인 하실 수 있습니다.
         </p>
         <a
-          href={"https://github.com/dev-jelly/splat-point"}
+          href={"https://github.com/dev-jelly/splat-plate"}
           className="h-6 w-6 fill-white text-white hover:fill-gray-200"
         >
           <GithubIcon />
