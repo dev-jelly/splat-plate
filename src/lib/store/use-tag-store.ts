@@ -48,8 +48,8 @@ type Title = {
 
 const initTitle = {
   title: {
-    first: -1,
-    last: -1,
+    first: 0,
+    last: 0,
     string: "카오폴리스의 젊은이",
   },
 };
