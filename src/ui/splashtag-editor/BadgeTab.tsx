@@ -20,11 +20,29 @@ export function BadgeTab() {
 
   const onClickBadge = (badge: string) => {
     console.log("badge", badge);
-    const newBadges = [
-      ...currentBadges.slice(0, selectedSlot),
-      badge,
-      ...currentBadges.slice(selectedSlot + 1),
-    ] as Badges;
+    let newBadges: Badges;
+    const indexOf = currentBadges.indexOf(badge);
+
+    if (currentBadges[selectedSlot] === badge) {
+      newBadges = [
+        ...currentBadges.slice(0, selectedSlot),
+        "",
+        ...currentBadges.slice(selectedSlot + 1),
+      ] as Badges;
+    } else if (indexOf !== -1) {
+      newBadges = [
+        ...currentBadges.slice(0, indexOf),
+        "",
+        ...currentBadges.slice(indexOf + 1),
+      ] as Badges;
+      newBadges[selectedSlot] = badge;
+    } else {
+      newBadges = [
+        ...currentBadges.slice(0, selectedSlot),
+        badge,
+        ...currentBadges.slice(selectedSlot + 1),
+      ] as Badges;
+    }
 
     setBadges(newBadges);
   };
