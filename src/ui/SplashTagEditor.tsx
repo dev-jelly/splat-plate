@@ -8,32 +8,41 @@ import { renderPlate } from "../lib/render-plate.ts";
 import { clsx } from "clsx";
 import { downloadTag } from "../lib/download-tag.ts";
 import { ShareTab } from "./splashtag-editor/ShareTab.tsx";
+import { PositionTab } from "./splashtag-editor/PositionTab.tsx";
+import { useTagPosition } from "../lib/store/use-position.ts";
 
 const language = "KRko";
 
 export function SplashTagEditor() {
   const [tab, setTab] = useState(0);
   const tag = useTagStore();
+  const positions = useTagPosition();
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    if (!canvasRef.current) return;
-    renderPlate(canvasRef.current, tag).then(() => {
-      console.log("rendered");
-    });
-  }, [tag]);
+    const timeout = setTimeout(() => {
+      if (!canvasRef.current) return;
+      renderPlate(canvasRef.current, tag).then(() => {
+        console.log("rendered");
+      });
+    }, 150);
+
+    return () => clearTimeout(timeout);
+  }, [tag, positions]);
 
   return (
     <div className="p-2 sm:p-8">
       <div className={"flex items-center justify-center"}>
         <canvas
           className={"max-w-full"}
-          style={{ aspectRatio: "auto 700 / 200" }}
+          style={{
+            aspectRatio: `auto ${positions.tagSize.w} / ${positions.tagSize.h}`,
+          }}
           ref={canvasRef}
           id="splashtag"
-          width="700"
-          height="200"
+          width={positions.tagSize.w}
+          height={positions.tagSize.h}
         />
       </div>
       <div
@@ -94,7 +103,6 @@ export function SplashTagEditor() {
                       {lang[language].ui.tabBadges}
                     </button>
                     <button
-                      disabled={true}
                       onClick={() => setTab(3)}
                       className={clsx(
                         tab === 3
@@ -147,6 +155,7 @@ export function SplashTagEditor() {
             {tab === 0 && <TextTab />}
             {tab === 1 && <BannerTab />}
             {tab === 2 && <BadgeTab />}
+            {tab === 3 && <PositionTab />}
             {tab === 4 && <ShareTab />}
           </div>
         </div>

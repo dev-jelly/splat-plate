@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { hashStorage } from "./use-tag-store.ts";
 
 type FontRect = {
   x: number;
@@ -9,8 +11,7 @@ type FontRect = {
 type Rect = {
   x: number;
   y: number;
-  w: number;
-  h: number;
+  size: number;
 };
 
 type TagPositionState = {
@@ -36,34 +37,44 @@ export const initTagPositionState: TagPositionState = {
   titlePosition: {
     x: 0,
     y: 0,
-    fontSize: 0,
+    fontSize: 36,
   },
   namePosition: {
     x: 0,
     y: 0,
-    fontSize: 0,
+    fontSize: 66,
   },
   badgesPosition: {
     x: 0,
     y: 0,
-    w: 0,
-    h: 0,
+    size: 0,
   },
   idPosition: {
     x: 0,
     y: 0,
-    fontSize: 0,
+    fontSize: 24,
   },
 };
 
-export const useTagPositionStore = create<TagPositionStore>((set) => ({
-  ...initTagPositionState,
-  set: (tag: TagPositionState) =>
-    set((state) => ({
-      ...state,
-      ...tag,
-    })),
-}));
+export const useTagPositionStore = create<
+  TagPositionStore,
+  [["zustand/persist", TagPositionStore]]
+>(
+  persist(
+    (set) => ({
+      ...initTagPositionState,
+      set: (tag: TagPositionState) =>
+        set((state) => ({
+          ...state,
+          ...tag,
+        })),
+    }),
+    {
+      name: "tag-position",
+      storage: createJSONStorage(() => hashStorage),
+    },
+  ),
+);
 
 export const useTagPosition = () => {
   const tagSize = useTagPositionStore((state) => state.tagSize);
@@ -84,10 +95,34 @@ export const useTagPosition = () => {
 export const useTagSize = () => useTagPositionStore((state) => state.tagSize);
 
 export const setTagSize = (tagSize: TagPositionState["tagSize"]) => {
+  const { w, h } = tagSize;
+
+  const width = w < 600 ? 600 : w > 800 ? 800 : w;
+  const height = h < 150 ? 150 : h > 250 ? 250 : h;
+
   useTagPositionStore.setState((state) => ({
     ...state,
-    tagSize,
+    tagSize: {
+      w: width,
+      h: height,
+    },
   }));
+};
+
+export const getTagSize = () => {
+  const tagSize = useTagPositionStore.getState().tagSize;
+  const { w, h } = tagSize;
+  const width = w < 600 ? 600 : w > 800 ? 800 : w;
+  const height = h < 150 ? 150 : h > 250 ? 250 : h;
+
+  return {
+    w: width,
+    h: height,
+  };
+};
+
+export const useTitlePosition = () => {
+  return useTagPositionStore((state) => state.titlePosition);
 };
 
 export const setTitlePosition = (
@@ -99,6 +134,18 @@ export const setTitlePosition = (
   }));
 };
 
+export const getTitlePosition = () => {
+  return useTagPositionStore.getState().titlePosition;
+};
+
+export const useNamePosition = () => {
+  return useTagPositionStore((state) => state.namePosition);
+};
+
+export const useBadgesPosition = () => {
+  return useTagPositionStore((state) => state.badgesPosition);
+};
+
 export const setNamePosition = (
   namePosition: TagPositionState["namePosition"],
 ) => {
@@ -107,6 +154,11 @@ export const setNamePosition = (
     namePosition,
   }));
 };
+
+export const getNamePosition = () => {
+  return useTagPositionStore.getState().namePosition;
+};
+
 export const setBadgesPosition = (
   badgesPosition: TagPositionState["badgesPosition"],
 ) => {
@@ -116,6 +168,14 @@ export const setBadgesPosition = (
   }));
 };
 
+export const getBadgesPosition = () => {
+  return useTagPositionStore.getState().badgesPosition;
+};
+
+export const useIdPosition = () => {
+  return useTagPositionStore((state) => state.idPosition);
+};
+
 export const setIdPosition = (idPosition: TagPositionState["idPosition"]) => {
   useTagPositionStore.setState((state) => ({
     ...state,
@@ -123,6 +183,9 @@ export const setIdPosition = (idPosition: TagPositionState["idPosition"]) => {
   }));
 };
 
+export const getIdPosition = () => {
+  return useTagPositionStore.getState().idPosition;
+};
 export const setTagPosition = (tagPosition: TagPositionState) => {
   useTagPositionStore.setState((state) => ({
     ...state,

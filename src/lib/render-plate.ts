@@ -2,6 +2,13 @@ import { TagState } from "./store/use-tag-store.ts";
 import * as lang from "../lang.json";
 import { base } from "./const.ts";
 import { scaleStepByGradientDirection } from "./types/gradient.ts";
+import {
+  getBadgesPosition,
+  getIdPosition,
+  getNamePosition,
+  getTagSize,
+  getTitlePosition,
+} from "./store/use-position.ts";
 
 const bannerSrc = (file: string, custom = false) =>
   `${base}/assets/${custom ? "custom/" : ""}banners/${file}`;
@@ -128,9 +135,10 @@ export const renderPlate = async (
   const textCtx = textCanvas.getContext("2d") as CanvasRenderingContext2D & {
     letterSpacing: string;
   };
+  const tagSize = getTagSize();
 
-  textCtx.clearRect(0, 0, 700, 200);
-  ctx.clearRect(0, 0, 700, 200);
+  textCtx.clearRect(0, 0, tagSize.w, tagSize.h);
+  ctx.clearRect(0, 0, tagSize.w, tagSize.h);
 
   const {
     banner,
@@ -147,24 +155,24 @@ export const renderPlate = async (
   } = tagState;
 
   const bannerImage = await getBannerImage(banner);
-  compositeCanvas.width = 700;
-  compositeCanvas.height = 200;
+  compositeCanvas.width = tagSize.w;
+  compositeCanvas.height = tagSize.h;
   const compositeCtx = compositeCanvas.getContext("2d");
-  canvasLayer.width = 700;
-  canvasLayer.height = 200;
+  canvasLayer.width = tagSize.w;
+  canvasLayer.height = tagSize.h;
   const layerCtx = canvasLayer.getContext("2d");
   ctx.save();
   if (isGradient) {
     // If gradient, draw the gradient then the banner
     const [sx, sy, dx, dy] = scaleStepByGradientDirection(
       gradientDirection,
-      700,
-      200,
+      tagSize.w,
+      tagSize.h,
     );
 
     let gradient = ctx.createLinearGradient(sx, sy, dx, dy);
     if (gradientDirection === "to outside") {
-      gradient = ctx.createRadialGradient(sx, sy, 0, dx, dy, 700 / 2);
+      gradient = ctx.createRadialGradient(sx, sy, 0, dx, dy, tagSize.w / 2);
     }
 
     gradient.addColorStop(0, bgColours[0]);
@@ -172,10 +180,10 @@ export const renderPlate = async (
     gradient.addColorStop(0.66, bgColours[2]);
     gradient.addColorStop(1, bgColours[3]);
     ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 700, 200);
+    ctx.fillRect(0, 0, tagSize.w, tagSize.h);
   } else if (!layers) {
     // If not one of the special "pick your own colour" banners, just draw it
-    ctx.drawImage(bannerImage, 0, 0, 700, 200);
+    ctx.drawImage(bannerImage, 0, 0, tagSize.w, tagSize.h);
   } else {
     // Special custom colour banners draw each layer then are added
 
@@ -196,29 +204,29 @@ export const renderPlate = async (
       if (!compositeCtx || !layerCtx) {
         return;
       }
-      compositeCtx.clearRect(0, 0, 700, 200);
+      compositeCtx.clearRect(0, 0, tagSize.w, tagSize.h);
       compositeCtx.save();
       compositeCtx.fillStyle = bgColours[!i ? i : imageLayers.length - i];
-      compositeCtx.drawImage(imageLayers[i], 0, 0, 700, 200);
+      compositeCtx.drawImage(imageLayers[i], 0, 0, tagSize.w, tagSize.h);
       compositeCtx.globalCompositeOperation = "difference";
-      compositeCtx.fillRect(0, 0, 700, 200);
+      compositeCtx.fillRect(0, 0, tagSize.w, tagSize.h);
       compositeCtx.restore();
 
       layerCtx.save();
-      layerCtx.drawImage(imageLayers[i], 0, 0, 700, 200);
+      layerCtx.drawImage(imageLayers[i], 0, 0, tagSize.w, tagSize.h);
       layerCtx.globalCompositeOperation = "source-in";
-      layerCtx.drawImage(compositeCanvas, 0, 0, 700, 200);
+      layerCtx.drawImage(compositeCanvas, 0, 0, tagSize.w, tagSize.h);
       layerCtx.restore();
       ctx.drawImage(canvasLayer, 0, 0);
-      layerCtx.clearRect(0, 0, 700, 200);
+      layerCtx.clearRect(0, 0, tagSize.w, tagSize.h);
     }
   }
   ctx.restore();
 
   /// About Text
   const textScale = 2;
-  textCanvas.width = 700 * textScale;
-  textCanvas.height = 200 * textScale;
+  textCanvas.width = tagSize.w * textScale;
+  textCanvas.height = tagSize.h * textScale;
 
   textCtx.scale(textScale, textScale);
 
@@ -228,92 +236,113 @@ export const renderPlate = async (
   // Write titles
   textCtx.textAlign = "left";
 
-  console.log("textFont", textFont);
-
+  const titlePosition = getTitlePosition();
   if (title) {
     textCtx.save();
-    textCtx.font = `36px ${textFont}`;
+    textCtx.font = `${titlePosition.fontSize}px ${textFont}`;
     textCtx.letterSpacing = "-0.3px";
     const textWidth = textCtx.measureText(titleToString(title)).width;
 
-    console.log("textWidth", textWidth);
-    const xScale = getXScale(textWidth, 700 - 32);
-    console.log("xScale", xScale);
-    // in game italic value is 0.12
+    const xScale = getXScale(textWidth, tagSize.w - 32);
+
     textCtx.transform(1, 0, -7.5 / 100, 1, 0, 0);
     textCtx.scale(xScale, 1);
-    textCtx.fillText(titleToString(title), 18 / xScale, 42);
+    textCtx.fillText(
+      titleToString(title),
+      18 / xScale + titlePosition.x,
+      42 + titlePosition.y + (tagSize.h - 200) / 2,
+    );
     textCtx.restore();
     textCtx.letterSpacing = "0px";
   }
+
   // Write tag text (if not empty)
+  const idPosition = getIdPosition();
   if (id.length) {
     textCtx.save();
-    textCtx.font = `24px ${textFont}`;
+    textCtx.font = `${idPosition.fontSize}px ${textFont}`;
     textCtx.letterSpacing = "0.2px";
 
     // tag text should adjust to the leftmost badge position.
     const leftBadge = badges.indexOf(
       badges.find((b) => b !== "") || "No Badge",
     );
-    const maxX = (leftBadge === -1 ? 700 : 480 + 74 * leftBadge) - 48;
+    const maxX = (leftBadge === -1 ? tagSize.w : 480 + 74 * leftBadge) - 48;
     const textWidth = textCtx.measureText(id).width;
     const xScale = getXScale(textWidth, maxX);
 
     textCtx.scale(xScale, 1);
-    textCtx.fillText("" + id, 24 / xScale, 185);
+    textCtx.fillText("" + id, 24 / xScale, 185 + (tagSize.h - 200) / 2);
     textCtx.restore();
   }
 
   // Write player name
+  const namePosition = getNamePosition();
+
   if (name.length) {
     textCtx.save();
-    textCtx.font = `66px ${titleFont}`;
+    textCtx.font = `${namePosition.fontSize}px ${titleFont}`;
     textCtx.letterSpacing = "-0.4px";
     const textWidth = textCtx.measureText(name).width;
-    const xScale = getXScale(textWidth, 700 - 32);
+    const xScale = getXScale(textWidth, tagSize.w - 32);
 
     textCtx.textAlign = "center";
     textCtx.scale(xScale, 1);
-    textCtx.fillText(name, (700 / 2 - 1.5) / xScale, 119);
+    textCtx.fillText(
+      name,
+      (tagSize.w / 2 - 1.5) / xScale + namePosition.x,
+      119 + namePosition.y + (tagSize.h - 200) / 2,
+    );
 
     textCtx.restore();
   }
   ctx.save();
-  ctx.drawImage(textCanvas, 0, 0, 700, 200);
-  textCtx.clearRect(0, 0, 700, 200);
+  ctx.drawImage(textCanvas, 0, 0, tagSize.w, tagSize.h);
+  textCtx.clearRect(0, 0, tagSize.w, tagSize.h);
   ctx.restore();
 
   // If the banner name or badge has either "custom" or "data" it is definitely a custom resource
 
   // Draw each badge on the banner
+  const badgesPosition = getBadgesPosition();
   for (let i = 0; i < 3; i++) {
     if (badges[i] !== "") {
-      const x = 480 + 74 * i;
+      const sizeRatio = 1 + 0.02 * badgesPosition.size;
+      const x = tagSize.w - 72 + (i - 2) * (74 * sizeRatio) + badgesPosition.x;
       const badgeImage = await getBadgeImage(badges[i]);
+
       // Below used to resize custom badges to retain their scale.
       if (isCustom) {
         const cw = badgeImage.naturalWidth;
         const ch = badgeImage.naturalHeight;
         const landscape = cw > ch;
+
+        const sizeRatio = 1 + 0.05 * badgesPosition.size;
+
         const ratio = !landscape ? cw / ch : ch / cw;
-        const width = landscape ? 70 : 70 * ratio;
-        const height = !landscape ? 70 : 70 * ratio;
+        const width = landscape ? 70 : 70 * ratio * sizeRatio;
+        const height = !landscape ? 70 : 70 * ratio * sizeRatio;
 
         ctx.drawImage(
           badgeImage,
           x + (70 / 2 - width / 2),
-          128 + (70 / 2 - height / 2),
+          128 + (70 / 2 - height / 2) + (tagSize.h - 200) / 2,
           width,
           height,
         );
       } else {
-        ctx.drawImage(badgeImage, x, 128, 70, 70);
+        ctx.drawImage(
+          badgeImage,
+          x,
+          128 + badgesPosition.y + (tagSize.h - 200) / 2,
+          70 * sizeRatio,
+          70 * sizeRatio,
+        );
       }
     }
   }
 
   ctx.save();
-  ctx.drawImage(textCanvas, 0, 0, 700, 200);
+  ctx.drawImage(textCanvas, 0, 0, tagSize.w, tagSize.h);
   ctx.restore();
 };

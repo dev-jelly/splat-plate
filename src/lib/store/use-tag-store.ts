@@ -4,7 +4,7 @@ import { GradientDirection } from "../types/gradient.ts";
 
 import { createJSONStorage, persist, StateStorage } from "zustand/middleware";
 
-const hashStorage: StateStorage = {
+export const hashStorage: StateStorage = {
   getItem: (key): string => {
     const searchParams = new URLSearchParams(location.hash.slice(1));
     const storedValue = searchParams.get(key) ?? "";
