@@ -1,7 +1,26 @@
 import { setTagSize, useTagSize } from "../../../lib/store/use-position.ts";
+import { useEffect } from "react";
 
 export const PlateSize = () => {
   const tagSize = useTagSize();
+
+  useEffect(() => {
+    const { w, h } = tagSize;
+
+    const t = setTimeout(() => {
+      if (w < 600 || w > 800 || h < 150 || h > 250) {
+        const width = w < 600 ? 600 : w > 800 ? 800 : w;
+        const height = h < 150 ? 150 : h > 250 ? 250 : h;
+        setTagSize({
+          w: width,
+          h: height,
+        });
+      }
+    }, 2000);
+
+    return () => clearTimeout(t);
+  }, [tagSize]);
+
   return (
     <div className={"flex flex-col items-start  gap-2"}>
       <h2 className={"text-lg"}>플레이트 사이즈</h2>
@@ -11,7 +30,7 @@ export const PlateSize = () => {
             htmlFor="tag-width"
             className="block text-sm font-medium leading-6"
           >
-            가로
+            가로 (600~800)
           </label>
           <input
             type="number"
@@ -35,7 +54,7 @@ export const PlateSize = () => {
             htmlFor="tag-height"
             className="block text-sm font-medium leading-6"
           >
-            세로
+            세로 (150~250)
           </label>
           <input
             type="number"

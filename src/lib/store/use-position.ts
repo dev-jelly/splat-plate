@@ -23,6 +23,7 @@ type TagPositionState = {
   namePosition: FontRect;
   badgesPosition: Rect;
   idPosition: FontRect;
+  printPreview?: boolean;
 };
 
 type TagPositionStore = TagPositionState & {
@@ -54,6 +55,35 @@ export const initTagPositionState: TagPositionState = {
     y: 0,
     fontSize: 24,
   },
+  printPreview: false,
+};
+
+export const printTagPosition: TagPositionState = {
+  tagSize: {
+    w: 740,
+    h: 240,
+  },
+  titlePosition: {
+    x: 12,
+    y: -5,
+    fontSize: 36,
+  },
+  namePosition: {
+    x: 0,
+    y: -8,
+    fontSize: 70,
+  },
+  badgesPosition: {
+    x: -14,
+    y: 4,
+    size: -5,
+  },
+  idPosition: {
+    x: 6,
+    y: 0,
+    fontSize: 24,
+  },
+  printPreview: false,
 };
 
 export const useTagPositionStore = create<
@@ -82,6 +112,7 @@ export const useTagPosition = () => {
   const namePosition = useTagPositionStore((state) => state.namePosition);
   const badgesPosition = useTagPositionStore((state) => state.badgesPosition);
   const idPosition = useTagPositionStore((state) => state.idPosition);
+  const printPreview = useTagPositionStore((state) => state.printPreview);
 
   return {
     tagSize,
@@ -89,6 +120,7 @@ export const useTagPosition = () => {
     namePosition,
     badgesPosition,
     idPosition,
+    printPreview,
   };
 };
 
@@ -97,14 +129,11 @@ export const useTagSize = () => useTagPositionStore((state) => state.tagSize);
 export const setTagSize = (tagSize: TagPositionState["tagSize"]) => {
   const { w, h } = tagSize;
 
-  const width = w < 600 ? 600 : w > 800 ? 800 : w;
-  const height = h < 150 ? 150 : h > 250 ? 250 : h;
-
   useTagPositionStore.setState((state) => ({
     ...state,
     tagSize: {
-      w: width,
-      h: height,
+      w,
+      h,
     },
   }));
 };
@@ -200,4 +229,26 @@ export const resetTagPosition = () => {
   }));
 };
 
+export const setPrintTagPosition = () => {
+  useTagPositionStore.setState((state) => ({
+    ...state,
+    ...printTagPosition,
+  }));
+};
+
 export const useTagPositionState = () => useTagPositionStore.getState();
+
+export const setPrintPreview = (printPreview: boolean) => {
+  useTagPositionStore.setState((state) => ({
+    ...state,
+    printPreview,
+  }));
+};
+
+export const usePrintPreview = () => {
+  return useTagPositionStore((state) => state.printPreview);
+};
+
+export const getPrintPreview = () => {
+  return useTagPositionStore.getState().printPreview;
+};

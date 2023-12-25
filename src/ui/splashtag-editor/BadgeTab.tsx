@@ -62,41 +62,77 @@ export function BadgeTab() {
   return (
     <div className={"h-full overflow-y-hidden p-2 md:px-8 md:py-4"}>
       <div className={"my-2 flex gap-4"}>
-        <label onClick={() => setSelectedSlot(0)}>
-          <input
-            className={"mr-1"}
-            type="radio"
-            name="badgenum"
-            value="1"
-            onChange={() => setSelectedSlot(0)}
-            checked={selectedSlot === 0}
-          />
-          <span id="textSlot1">슬롯 1</span>
-        </label>{" "}
+        <div>
+          <label className={"mr-2"} onClick={() => setSelectedSlot(0)}>
+            <input
+              className={"mr-1"}
+              type="radio"
+              name="badgenum"
+              value="1"
+              onChange={() => setSelectedSlot(0)}
+              checked={selectedSlot === 0}
+            />
+            <span id="textSlot1">슬롯 1</span>
+          </label>
+          <button
+            className={
+              "rounded-md bg-gray-900 px-2 text-sm text-gray-400 hover:text-gray-600"
+            }
+            onClick={() => {
+              setBadges(["", currentBadges[1], currentBadges[2]]);
+            }}
+          >
+            비우기
+          </button>
+        </div>
         -{" "}
-        <label onClick={() => setSelectedSlot(1)}>
-          <input
-            className={"mr-1"}
-            type="radio"
-            name="badgenum"
-            value="2"
-            onChange={() => setSelectedSlot(1)}
-            checked={selectedSlot === 1}
-          />
-          <span id="textSlot2">슬롯 2</span>
-        </label>
-        -{" "}
-        <label onClick={() => setSelectedSlot(2)}>
-          <input
-            className={"mr-1"}
-            type="radio"
-            name="badgenum"
-            value="3"
-            onChange={() => setSelectedSlot(2)}
-            checked={selectedSlot === 2}
-          />
-          <span id="textSlot3">슬롯 3</span>
-        </label>
+        <div>
+          <label className={"mr-2"} onClick={() => setSelectedSlot(1)}>
+            <input
+              className={"mr-1"}
+              type="radio"
+              name="badgenum"
+              value="2"
+              onChange={() => setSelectedSlot(1)}
+              checked={selectedSlot === 1}
+            />
+            <span id="textSlot2">슬롯 2</span>
+          </label>
+          <button
+            className={
+              "rounded-md bg-gray-900 px-2 text-sm text-gray-400 hover:text-gray-600"
+            }
+            onClick={() => {
+              setBadges([currentBadges[0], "", currentBadges[2]]);
+            }}
+          >
+            비우기
+          </button>
+        </div>
+        -
+        <div>
+          <label className={"mr-2"} onClick={() => setSelectedSlot(2)}>
+            <input
+              className={"mr-1"}
+              type="radio"
+              name="badgenum"
+              value="3"
+              onChange={() => setSelectedSlot(2)}
+              checked={selectedSlot === 2}
+            />
+            <span id="textSlot3">슬롯 3</span>
+          </label>
+          <button
+            className={
+              "rounded-md bg-gray-900 px-2 text-sm text-gray-400 hover:text-gray-600"
+            }
+            onClick={() => {
+              setBadges([currentBadges[0], currentBadges[1], ""]);
+            }}
+          >
+            비우기
+          </button>
+        </div>
       </div>
       <div className={"my-4 h-px w-full bg-black/20"}></div>
       <div className="h-full max-h-[calc(100vh-240px)] overflow-y-scroll pr-2 sm:pb-24">

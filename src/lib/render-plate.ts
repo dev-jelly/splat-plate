@@ -6,6 +6,7 @@ import {
   getBadgesPosition,
   getIdPosition,
   getNamePosition,
+  getPrintPreview,
   getTagSize,
   getTitlePosition,
 } from "./store/use-position.ts";
@@ -242,7 +243,6 @@ export const renderPlate = async (
     textCtx.font = `${titlePosition.fontSize}px ${textFont}`;
     textCtx.letterSpacing = "-0.3px";
     const textWidth = textCtx.measureText(titleToString(title)).width;
-
     const xScale = getXScale(textWidth, tagSize.w - 32);
 
     textCtx.transform(1, 0, -7.5 / 100, 1, 0, 0);
@@ -272,7 +272,11 @@ export const renderPlate = async (
     const xScale = getXScale(textWidth, maxX);
 
     textCtx.scale(xScale, 1);
-    textCtx.fillText("" + id, 24 / xScale, 185 + (tagSize.h - 200) / 2);
+    textCtx.fillText(
+      "" + id,
+      24 / xScale + idPosition.x,
+      185 + (tagSize.h - 200) / 2 + idPosition.y,
+    );
     textCtx.restore();
   }
 
@@ -341,8 +345,31 @@ export const renderPlate = async (
       }
     }
   }
-
   ctx.save();
+
+  const printPreview = getPrintPreview();
+
+  // draw a red line, 700, 200 on center
+  if (printPreview) {
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(tagSize.w / 2, 0);
+    ctx.lineTo(tagSize.w / 2, tagSize.h);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, tagSize.h / 2);
+    ctx.lineTo(tagSize.w, tagSize.h / 2);
+    ctx.stroke();
+
+    //draw rectangle on center of canvas (700, 200)
+    ctx.strokeStyle = "red";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.rect(tagSize.w / 2 - 350, tagSize.h / 2 - 100, 700, 200);
+    ctx.stroke();
+  }
+
   ctx.drawImage(textCanvas, 0, 0, tagSize.w, tagSize.h);
   ctx.restore();
 };

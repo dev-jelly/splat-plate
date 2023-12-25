@@ -9,7 +9,11 @@ import { clsx } from "clsx";
 import { downloadTag } from "../lib/download-tag.ts";
 import { ShareTab } from "./splashtag-editor/ShareTab.tsx";
 import { PositionTab } from "./splashtag-editor/PositionTab.tsx";
-import { useTagPosition } from "../lib/store/use-position.ts";
+import {
+  getPrintPreview,
+  setPrintPreview,
+  useTagPosition,
+} from "../lib/store/use-position.ts";
 
 const language = "KRko";
 
@@ -132,7 +136,15 @@ export function SplashTagEditor() {
                       disabled={!canvasRef.current}
                       onClick={() => {
                         if (!canvasRef.current) return;
-                        downloadTag(canvasRef.current);
+                        if (getPrintPreview()) {
+                          setPrintPreview(false);
+                          setTimeout(() => {
+                            if (!canvasRef.current) return;
+                            downloadTag(canvasRef.current);
+                          }, 1000);
+                        } else {
+                          downloadTag(canvasRef.current);
+                        }
                       }}
                       className={clsx(
                         tab === 3
