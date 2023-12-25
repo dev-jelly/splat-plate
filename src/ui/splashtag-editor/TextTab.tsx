@@ -15,6 +15,7 @@ const langs = lang["KRko"];
 
 export function TextTab() {
   const [customTitle, setCustomTitle] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { first, last, string } = useTitle();
   const name = useName();
   const color = useColor();
@@ -23,6 +24,7 @@ export function TextTab() {
   useEffect(() => {
     langs.titles.first.sort();
     langs.titles.last.sort();
+    setLoading(false);
   }, []);
 
   const onCustomTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,6 +47,7 @@ export function TextTab() {
     });
   };
 
+  if (loading) return <div></div>;
   return (
     <div
       className="flex h-full w-full flex-col items-center justify-start p-2 text-white sm:p-4 md:px-8"
