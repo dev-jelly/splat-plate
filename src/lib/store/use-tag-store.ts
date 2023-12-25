@@ -50,7 +50,7 @@ const initTitle = {
   title: {
     first: 0,
     last: 0,
-    string: "카오폴리스의 젊은이",
+    string: "100% .52 갤런 유저",
   },
 };
 
