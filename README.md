@@ -19,6 +19,14 @@
 
 Splat plate is a tool to generate Splatoon Plate.
 
+## Credit
+
+dev-jelly 개발 및 디자인 - [트위터](https://twitter.com/splat_shooter)
+
+## Special Thanks
+
+초코 [트위터](https://twitter.com/octoling_choco) - 아이디어 제공
+
 ## LICENSE ISSUES
 
 ## Nitendo LICENSE
