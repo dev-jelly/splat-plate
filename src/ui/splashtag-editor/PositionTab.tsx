@@ -16,7 +16,7 @@ export function PositionTab() {
     <div
       className={"flex h-full flex-col gap-8 overflow-y-scroll p-4 text-white"}
     >
-      <div className={"flex items-center gap-4"}>
+      <div className={"flex flex-col gap-4 sm:flex-row sm:items-center"}>
         <button
           onClick={resetTagPosition}
           className={
@@ -33,12 +33,14 @@ export function PositionTab() {
         >
           인쇄용으로 지정
         </button>
-        <p>프린트 예상 미리보기</p>
-        <input
-          type={"checkbox"}
-          checked={printPreview}
-          onClick={() => setPrintPreview(!printPreview)}
-        />
+        <div className={"flex justify-center gap-2"}>
+          <p>프린트 예상 미리보기</p>
+          <input
+            type={"checkbox"}
+            checked={printPreview}
+            onClick={() => setPrintPreview(!printPreview)}
+          />
+        </div>
       </div>
       <div className={"flex flex-col gap-8 md:flex-row md:gap-12"}>
         <PlateSize />
