@@ -70,7 +70,7 @@ export const printTagPosition: TagPositionState = {
   },
   namePosition: {
     x: 0,
-    y: -8,
+    y: -4,
     fontSize: 70,
   },
   badgesPosition: {

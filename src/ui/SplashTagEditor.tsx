@@ -146,10 +146,7 @@ export function SplashTagEditor() {
                           downloadTag(canvasRef.current);
                         }
                       }}
-                      className={clsx(
-                        tab === 3
-                          ? "bg-gray-800 text-white"
-                          : "text-gray-400 hover:bg-gray-800 hover:text-white",
+                      className={clsx("text-gray-400 hover:bg-gray-800 hover:text-white",
                         "group flex w-full gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
                       )}
                       type="button"

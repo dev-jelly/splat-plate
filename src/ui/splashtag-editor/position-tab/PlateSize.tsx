@@ -60,11 +60,14 @@ export const PlateSize = () => {
             type="number"
             name="tag-height"
             id="tag-height"
+            min={150}
+            max={250}
             className={"w-20 pl-2 text-black"}
-            onBlur={(e) => {
+            onChange={(e) => {
+              const h = Number(e.target.value);
               setTagSize({
                 w: tagSize.w,
-                h: Number(e.target.value),
+                h,
               });
             }}
             value={tagSize.h}
